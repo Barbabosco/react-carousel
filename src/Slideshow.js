@@ -1,6 +1,5 @@
 import * as React from "react";
 import styles from "./slideshow.module.css";
-import placeholder from "./img/slide_placeholder.jpg";
 
 function Slideshow({ srcArray }) {
   let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
@@ -94,7 +93,7 @@ function Slideshow({ srcArray }) {
       </h2>
 
       <div id='carouselContainer' className={styles.container}>
-        <Slides imgArray={imgArray} />
+        <Slides srcArray={srcArray} imgArray={imgArray} />
       </div>
 
       <Indicators
@@ -108,10 +107,19 @@ function Slideshow({ srcArray }) {
 
 export default Slideshow;
 
-function Slides({ imgArray }) {
+function Slides({ srcArray, imgArray }) {
   return (
     <div id='carouselSlides' className={styles.slides}>
-      {imgArray}
+      {!imgArray ? (
+        <img
+          id={`XXXX`}
+          src={process.env.PUBLIC_URL + srcArray[0]}
+          alt='lorem ipsum'
+          key={`XXXX`}
+        />
+      ) : (
+        imgArray
+      )}
     </div>
   );
 }
