@@ -93,7 +93,7 @@ function Slideshow({ srcArray }) {
       </h2>
 
       <div id='carouselContainer' className={styles.container}>
-        <Slides srcArray={srcArray} imgArray={imgArray} />
+        <Slides imgArray={imgArray} />
       </div>
 
       <Indicators
@@ -107,19 +107,10 @@ function Slideshow({ srcArray }) {
 
 export default Slideshow;
 
-function Slides({ srcArray, imgArray }) {
+function Slides({ imgArray }) {
   return (
     <div id='carouselSlides' className={styles.slides}>
-      {!imgArray ? (
-        <img
-          id={`XXXX`}
-          src={process.env.PUBLIC_URL + srcArray[0]}
-          alt='lorem ipsum'
-          key={`XXXX`}
-        />
-      ) : (
-        imgArray
-      )}
+      {imgArray}
     </div>
   );
 }
