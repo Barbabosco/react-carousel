@@ -45,7 +45,7 @@ function Slideshow({ srcArray }) {
             />,
           ]);
           setExecIter(execIter + 1);
-        }, 10000);
+        }, 100);
       } else {
         // se è un'esecuzione successiva alla prima
         setImgArray([
