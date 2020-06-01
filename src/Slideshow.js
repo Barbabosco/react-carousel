@@ -8,10 +8,10 @@ function Slideshow({ srcArray }) {
   let [imgArray, setImgArray] = React.useState([
     // The component mounts with a lightweight placeholder image
     <img
-      id='placeholder'
-      src={placeholder}
+      id={`slide${execIter + 1}`}
+      src={process.env.PUBLIC_URL + srcArray[0]}
       alt='lorem ipsum'
-      key={`deskslide-placeholder}`}
+      key={`deskslide${execIter + 1}`}
     />,
   ]);
   let [goToSlide, setGoToSlide] = React.useState(null);
@@ -28,41 +28,40 @@ function Slideshow({ srcArray }) {
       //  di mostrare un'immagine alla volta nella giusta sequenza.
       // La condizione di uscita si raggiunge al termine dell'array
 
-      if (execIter === srcArray.length) {
+      if (execIter === srcArray.length - 1) {
         // condizione di uscita dalla ricorsione
         return;
       }
 
-      if (execIter === 0) {
-        // = se è la prima esecuzione
-        setTimeout(() => {
-          setImgArray([
-            <img
-              id={`slide${execIter + 1}`}
-              src={process.env.PUBLIC_URL + srcArray[0]}
-              alt='lorem ipsum'
-              key={`deskslide${execIter + 1}`}
-            />,
-          ]);
-          setExecIter(execIter + 1);
-        }, 500);
-      } else {
-        // se è un'esecuzione successiva alla prima
-        setImgArray([
-          ...imgArray,
-          <img
-            id={`slide${execIter + 1}`}
-            src={process.env.PUBLIC_URL + srcArray[execIter]}
-            alt='lorem ipsum'
-            key={`deskslide${execIter + 1}`}
-            onLoad={() => {
-              // questa è la chiamata ricorsiva
-              getImg();
-            }}
-          />,
-        ]);
-        setExecIter(execIter + 1);
-      }
+      // if (execIter === 0) {
+      //   // = se è la prima esecuzione
+      //   setTimeout(() => {
+      //     setImgArray([
+      //       <img
+      //         id={`slide${execIter + 1}`}
+      //         src={process.env.PUBLIC_URL + srcArray[0]}
+      //         alt='lorem ipsum'
+      //         key={`deskslide${execIter + 1}`}
+      //       />,
+      //     ]);
+      //     setExecIter(execIter + 1);
+      //   }, 500);
+
+      // se è un'esecuzione successiva alla prima
+      setImgArray([
+        ...imgArray,
+        <img
+          id={`slide${execIter + 2}`}
+          src={process.env.PUBLIC_URL + srcArray[execIter + 1]}
+          alt='lorem ipsum'
+          key={`deskslide${execIter + 2}`}
+          onLoad={() => {
+            // questa è la chiamata ricorsiva
+            getImg();
+          }}
+        />,
+      ]);
+      setExecIter(execIter + 1);
     }
 
     getImg();
