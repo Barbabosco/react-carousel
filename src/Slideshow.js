@@ -35,15 +35,17 @@ function Slideshow({ srcArray }) {
 
       if (execIter === 0) {
         // = se è la prima esecuzione
-        setImgArray([
-          <img
-            id={`slide${execIter + 1}`}
-            src={process.env.PUBLIC_URL + srcArray[0]}
-            alt='lorem ipsum'
-            key={`deskslide${execIter + 1}`}
-          />,
-        ]);
-        setExecIter(execIter + 1);
+        setTimeout(() => {
+          setImgArray([
+            <img
+              id={`slide${execIter + 1}`}
+              src={process.env.PUBLIC_URL + srcArray[0]}
+              alt='lorem ipsum'
+              key={`deskslide${execIter + 1}`}
+            />,
+          ]);
+          setExecIter(execIter + 1);
+        }, 10000);
       } else {
         // se è un'esecuzione successiva alla prima
         setImgArray([
