@@ -1,0 +1,6 @@
+{
+  "prettier.jsxSingleQuote": true,
+  "prettier.packageManager": "yarn",
+  "prettier.useEditorConfig": false,
+  "editor.formatOnSave": true
+}
