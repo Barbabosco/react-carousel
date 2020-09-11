@@ -2,17 +2,18 @@ import * as React from "react";
 import ReactDOM from "react-dom";
 import Slideshow from "./Slideshow";
 
-let srcArray = [
-  "./slide/slide01.jpg",
-  "./slide/slide02.jpg",
-  "./slide/slide03.jpg",
-  "./slide/slide04.jpg",
-  "./slide/slide05.jpg",
+const folderName = "./slide-aabb/";
+const slideArray = [
+  [`${folderName}01`, "lorem ipsum01"],
+  [`${folderName}02`, "lorem ipsum02"],
+  [`${folderName}03`, "lorem ipsum03"],
+  [`${folderName}04`, "lorem ipsum04"],
+  [`${folderName}05`, "lorem ipsum05"],
 ];
 
 ReactDOM.render(
   <React.StrictMode>
-    <Slideshow srcArray={srcArray} />
+    <Slideshow slideArray={slideArray} />
   </React.StrictMode>,
   document.getElementById("root")
 );

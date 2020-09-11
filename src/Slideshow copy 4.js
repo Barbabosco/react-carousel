@@ -1,28 +1,7 @@
 import * as React from "react";
 import styles from "./slideshow.module.css";
 
-function useInterval(callback, delay) {
-  const savedCallback = React.useRef();
-
-  // Remember the latest function.
-  React.useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  React.useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
-
 function Slideshow({ slideArray }) {
-  const [count, setCount] = React.useState(0);
   let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
   let [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
   let [imgArray, setImgArray] = React.useState([
@@ -41,19 +20,6 @@ function Slideshow({ slideArray }) {
     </picture>,
   ]);
   let [goToSlide, setGoToSlide] = React.useState(null);
-
-  useInterval(() => {
-    // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
-    setCount(count + 1);
-
-    if (count > 0 && count % 3 === 0) {
-      if (position < imgArray.length) {
-        goToSlide(position);
-      } else {
-        goToSlide(0);
-      }
-    }
-  }, 1000);
 
   React.useLayoutEffect(() => {
     function getImg() {
@@ -120,21 +86,6 @@ function Slideshow({ slideArray }) {
     }
   }, [execIter, setGoToSlide]);
 
-  // START avanzamento automatico dello slider
-  // React.useLayoutEffect(() => {
-  //   useInterval(() => {
-  //     console.log("ok1");
-  //     console.log(execIter);
-  //     if (execIter) {
-  //       console.log("ok2");
-  //       console.log(execIter);
-  //       // setPosition(4);
-  //       // goToSlide(4);
-  //     }
-  //   }, 2000);
-  // }, [execIter]);
-  // END avanzamento automatico dello slider
-
   return (
     <div>
       <h1 className={styles.myH1}>React Slideshow</h1>
@@ -151,9 +102,6 @@ function Slideshow({ slideArray }) {
         goToSlide={goToSlide}
         position={position}
       />
-      <br />
-      <br />
-      {/* <SlidingTimer count={count} goToSlide={goToSlide} position={position} /> */}
     </div>
   );
 }
@@ -177,7 +125,6 @@ function Indicators({ imgArray, goToSlide, position }) {
   const nextSlide = () => {
     if (position < imgArray.length) {
       goToSlide(position);
-      // console.log("nextSlide fired");
     }
   };
 

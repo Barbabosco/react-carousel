@@ -1,59 +1,38 @@
 import * as React from "react";
 import styles from "./slideshow.module.css";
 
-function useInterval(callback, delay) {
-  const savedCallback = React.useRef();
-
-  // Remember the latest function.
-  React.useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  React.useEffect(() => {
-    function tick() {
-      savedCallback.current();
+function Slideshow({ folderName, lastImgNum }) {
+  let srcWebPArray = [];
+  let srcJpgArray = [];
+  for (let i = 1; i <= lastImgNum; i++) {
+    if (i < 10) {
+      srcWebPArray = [...srcWebPArray, `./${folderName}/0${i}.webp`];
+      srcJpgArray = [...srcJpgArray, `./${folderName}/0${i}.jpg`];
+    } else {
+      srcWebPArray = [...srcWebPArray, `./${folderName}/${i}.webp`];
+      srcJpgArray = [...srcJpgArray, `./${folderName}/${i}.jpg`];
     }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
+  }
 
-function Slideshow({ slideArray }) {
-  const [count, setCount] = React.useState(0);
   let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
   let [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
   let [imgArray, setImgArray] = React.useState([
     <picture key={`deskslidePicture${execIter + 1}`}>
       <source
-        srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.webp`}
+        srcSet={process.env.PUBLIC_URL + srcWebPArray[0]}
         key={`deskslideWebP${execIter + 1}`}
         type='image/webp'
+        media='(min-width: 4000px)'
       />
       <img
         id={`slide${execIter + 1}`}
-        srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.jpg`}
-        alt={`${slideArray[0][1]}`}
+        src={process.env.PUBLIC_URL + srcJpgArray[0]}
+        alt='lorem ipsum'
         key={`deskslide${execIter + 1}`}
       />
     </picture>,
   ]);
   let [goToSlide, setGoToSlide] = React.useState(null);
-
-  useInterval(() => {
-    // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
-    setCount(count + 1);
-
-    if (count > 0 && count % 3 === 0) {
-      if (position < imgArray.length) {
-        goToSlide(position);
-      } else {
-        goToSlide(0);
-      }
-    }
-  }, 1000);
 
   React.useLayoutEffect(() => {
     function getImg() {
@@ -66,7 +45,7 @@ function Slideshow({ slideArray }) {
       //  di mostrare un'immagine alla volta nella giusta sequenza.
       // La condizione di uscita si raggiunge al termine dell'array
 
-      if (execIter === slideArray.length - 1) {
+      if (execIter === srcJpgArray.length - 1) {
         // condizione di uscita dalla ricorsione
         return;
       }
@@ -75,18 +54,14 @@ function Slideshow({ slideArray }) {
         ...imgArray,
         <picture key={`deskslidePicture${execIter + 2}`}>
           <source
-            srcSet={`${process.env.PUBLIC_URL}${
-              slideArray[execIter + 1][0]
-            }.webp`}
+            srcSet={process.env.PUBLIC_URL + srcWebPArray[execIter + 1]}
             key={`deskslideWebP${execIter + 1}`}
             type='image/webp'
           />
           <img
             id={`slide${execIter + 2}`}
-            srcSet={`${process.env.PUBLIC_URL}${
-              slideArray[execIter + 1][0]
-            }.jpg`}
-            alt={`${slideArray[execIter + 1][1]}`}
+            src={process.env.PUBLIC_URL + srcJpgArray[execIter + 1]}
+            alt='lorem ipsum'
             key={`deskslide${execIter + 2}`}
             onLoad={() => {
               // questa è la chiamata ricorsiva
@@ -99,7 +74,7 @@ function Slideshow({ slideArray }) {
     }
 
     getImg();
-  }, [execIter, imgArray, slideArray]);
+  }, [execIter, imgArray, srcJpgArray, srcWebPArray]);
 
   React.useLayoutEffect(() => {
     if (execIter) {
@@ -120,21 +95,6 @@ function Slideshow({ slideArray }) {
     }
   }, [execIter, setGoToSlide]);
 
-  // START avanzamento automatico dello slider
-  // React.useLayoutEffect(() => {
-  //   useInterval(() => {
-  //     console.log("ok1");
-  //     console.log(execIter);
-  //     if (execIter) {
-  //       console.log("ok2");
-  //       console.log(execIter);
-  //       // setPosition(4);
-  //       // goToSlide(4);
-  //     }
-  //   }, 2000);
-  // }, [execIter]);
-  // END avanzamento automatico dello slider
-
   return (
     <div>
       <h1 className={styles.myH1}>React Slideshow</h1>
@@ -151,9 +111,6 @@ function Slideshow({ slideArray }) {
         goToSlide={goToSlide}
         position={position}
       />
-      <br />
-      <br />
-      {/* <SlidingTimer count={count} goToSlide={goToSlide} position={position} /> */}
     </div>
   );
 }
@@ -177,7 +134,6 @@ function Indicators({ imgArray, goToSlide, position }) {
   const nextSlide = () => {
     if (position < imgArray.length) {
       goToSlide(position);
-      // console.log("nextSlide fired");
     }
   };
 
