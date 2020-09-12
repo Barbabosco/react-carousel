@@ -2,6 +2,7 @@ import * as React from "react";
 import styles from "./slideshow.module.css";
 
 function useInterval(callback, delay) {
+  // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
   const savedCallback = React.useRef();
 
   // Remember the latest function.
@@ -21,7 +22,7 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-function Slideshow({ slideArray }) {
+function Slideshow({ slideArray, lifter }) {
   const [count, setCount] = React.useState(0);
   let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
   let [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
@@ -55,51 +56,76 @@ function Slideshow({ slideArray }) {
     }
   }, 1000);
 
-  React.useLayoutEffect(() => {
-    function getImg() {
-      // questa funzione serve a caricare le immagini dello slideshow
-      // dopo il suo iniziale caricamento.
-      // Utilizzo questa funzione in modo 🚀 ricorsivo 🚀
-      // (attraverso onLoad: ogni nuova immagine chiama nuovamente
-      // questa funzione per aggiungere un'altra immagine all'array).
-      // La nuova chiamata avviene onLoad, in modo da essere sicuri
-      //  di mostrare un'immagine alla volta nella giusta sequenza.
-      // La condizione di uscita si raggiunge al termine dell'array
+  const getImg = () => {
+    // questa funzione serve a caricare le immagini dello slideshow
+    // dopo il suo iniziale caricamento.
+    // Utilizzo questa funzione in modo 🚀 ricorsivo 🚀
+    // (attraverso onLoad: ogni nuova immagine chiama nuovamente
+    // questa funzione per aggiungere un'altra immagine all'array).
+    // La nuova chiamata avviene onLoad, in modo da essere sicuri
+    //  di mostrare un'immagine alla volta nella giusta sequenza.
+    // La condizione di uscita si raggiunge al termine dell'array
 
-      if (execIter === slideArray.length - 1) {
-        // condizione di uscita dalla ricorsione
-        return;
-      }
+    console.log(`getImg run`);
 
-      setImgArray([
-        ...imgArray,
-        <picture key={`deskslidePicture${execIter + 2}`}>
-          <source
-            srcSet={`${process.env.PUBLIC_URL}${
-              slideArray[execIter + 1][0]
-            }.webp`}
-            key={`deskslideWebP${execIter + 1}`}
-            type='image/webp'
-          />
-          <img
-            id={`slide${execIter + 2}`}
-            srcSet={`${process.env.PUBLIC_URL}${
-              slideArray[execIter + 1][0]
-            }.jpg`}
-            alt={`${slideArray[execIter + 1][1]}`}
-            key={`deskslide${execIter + 2}`}
-            onLoad={() => {
-              // questa è la chiamata ricorsiva
-              getImg();
-            }}
-          />
-        </picture>,
-      ]);
-      setExecIter(execIter + 1);
+    if (execIter === slideArray.length - 1) {
+      // condizione di uscita dalla ricorsione
+      console.log("exit recursion");
+      return;
     }
 
-    getImg();
-  }, [execIter, imgArray, slideArray]);
+    setImgArray([
+      ...imgArray,
+      <picture key={`deskslidePicture${execIter + 2}`}>
+        <source
+          srcSet={`${process.env.PUBLIC_URL}${
+            slideArray[execIter + 1][0]
+          }.webp`}
+          key={`deskslideWebP${execIter + 1}`}
+          type='image/webp'
+        />
+        <img
+          id={`slide${execIter + 2}`}
+          srcSet={`${process.env.PUBLIC_URL}${slideArray[execIter + 1][0]}.jpg`}
+          alt={`${slideArray[execIter + 1][1]}`}
+          key={`deskslide${execIter + 2}`}
+          onLoad={() => {
+            // questa è la chiamata ricorsiva
+
+            console.log("onLoad");
+
+            getImg();
+          }}
+        />
+      </picture>,
+    ]);
+
+    console.log(`execIter: ${execIter}`);
+    setExecIter(execIter + 1);
+  };
+
+  // React.useEffect(() => {
+  //   getImg();
+  //   // console.log(`count: ${count}`);
+  // }, [execIter, imgArray]);
+
+  // React.useEffect(() => {
+  //   getImg();
+  //   // console.log(`count: ${count}`);
+  // });
+
+  // document.onreadystatechange = function () {
+  //   if (document.readyState === "complete") {
+  //     console.log("complete");
+  //     getImg();
+  //   }
+  // };
+
+  // React.useEffect(function () {
+  // lifter(getImg);
+  // });
+
+  useInterval(getImg, 1000);
 
   React.useLayoutEffect(() => {
     if (execIter) {
@@ -120,21 +146,6 @@ function Slideshow({ slideArray }) {
     }
   }, [execIter, setGoToSlide]);
 
-  // START avanzamento automatico dello slider
-  // React.useLayoutEffect(() => {
-  //   useInterval(() => {
-  //     console.log("ok1");
-  //     console.log(execIter);
-  //     if (execIter) {
-  //       console.log("ok2");
-  //       console.log(execIter);
-  //       // setPosition(4);
-  //       // goToSlide(4);
-  //     }
-  //   }, 2000);
-  // }, [execIter]);
-  // END avanzamento automatico dello slider
-
   return (
     <div>
       <h1 className={styles.myH1}>React Slideshow</h1>
@@ -151,9 +162,7 @@ function Slideshow({ slideArray }) {
         goToSlide={goToSlide}
         position={position}
       />
-      <br />
-      <br />
-      {/* <SlidingTimer count={count} goToSlide={goToSlide} position={position} /> */}
+      <p>{count}</p>
     </div>
   );
 }
@@ -161,9 +170,15 @@ function Slideshow({ slideArray }) {
 export default Slideshow;
 
 function Slides({ imgArray }) {
+  console.log(`imgArray.length: ${imgArray.length}`);
+  // React.useEffect(function () {
+  //   console.log("Slides: getImg run");
+  //   getImg();
+  // });
   return (
     <div id='carouselSlides' className={styles.slides}>
-      {imgArray}
+      {imgArray ? imgArray : null}
+      {/* imgArray */}
     </div>
   );
 }

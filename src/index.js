@@ -13,7 +13,21 @@ const slideArray = [
 
 ReactDOM.render(
   <React.StrictMode>
-    <Slideshow slideArray={slideArray} />
+    <MyComp />
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+function MyComp(props) {
+  // let lifted;
+  // const lifter = (callback) => {
+  //   console.log("lifter run");
+  //   lifted = callback;
+  // };
+
+  // React.useEffect(function () {
+  //   // lifted();
+
+  // }, []);
+  return <Slideshow slideArray={slideArray} />;
+}
