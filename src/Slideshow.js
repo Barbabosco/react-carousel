@@ -148,7 +148,7 @@ function Slideshow({ slideArray, lifter }) {
 
   return (
     <div>
-      <h1 className={styles.myH1}>React Slideshow</h1>
+      <h1 className={styles.myH1}>React SlideshowX</h1>
       <h2 className={styles.myH2}>
         Super lightweight, optimized for speed and performance.
       </h2>
