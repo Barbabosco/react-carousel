@@ -24,13 +24,6 @@ const mySlides = {
   height: "400px",
 };
 
-// inizio: forse inutilizzata??? XXXXXXXXXXXXXXXXXXXXX
-// const mySlide = {
-//   width: "100%",
-//   height: "400px",
-// };
-// fine: forse inutilizzata??? XXXXXXXXXXXXXXXXXXXXX
-
 const myIndicators = {
   margin: "auto",
   width: "800px",
@@ -39,7 +32,7 @@ const myIndicators = {
 };
 
 const mySelected = {
-  backgroundColor: "aqua",
+  backgroundColor: "aqua", // da verificare se serve XXXXXXXXXXXXXXXXXXXXXXXXXX
 };
 
 function useInterval(callback, delay) {
@@ -139,11 +132,26 @@ function Slideshow({ slideArray, lifter }) {
     ]);
 
     console.log(`execIter: ${execIter}`);
+    console.log();
     setExecIter(execIter + 1);
   };
 
-  useInterval(getImg, 1000);
+  // getImg();
+  // useInterval(getImg, 1000);
   // setTimeout(getImg, 1000);
+  // setTimeout(function () {
+  //   getImg();
+  // }, 1000);
+
+  let [delay, setDelay] = React.useState(1000);
+
+  useInterval(
+    function () {
+      console.log("useInterval run");
+      getImg();
+    },
+    count < 7 ? (count < 1 ? 1000 : 100) : null
+  );
 
   React.useLayoutEffect(() => {
     if (execIter) {
@@ -192,7 +200,6 @@ function Slideshow({ slideArray, lifter }) {
 export default Slideshow;
 
 function Slides({ imgArray }) {
-  console.log(`imgArray.length: ${imgArray.length}`);
   return (
     <div id='carouselSlides' style={mySlides}>
       {imgArray ? imgArray : null}
