@@ -47,7 +47,7 @@ function Slideshow({ slideArray, lifter }) {
     // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
     setCount(count + 1);
 
-    if (count > 0 && count % 3 === 0) {
+    if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
       if (position < imgArray.length) {
         goToSlide(position);
       } else {
@@ -104,27 +104,6 @@ function Slideshow({ slideArray, lifter }) {
     setExecIter(execIter + 1);
   };
 
-  // React.useEffect(() => {
-  //   getImg();
-  //   // console.log(`count: ${count}`);
-  // }, [execIter, imgArray]);
-
-  // React.useEffect(() => {
-  //   getImg();
-  //   // console.log(`count: ${count}`);
-  // });
-
-  // document.onreadystatechange = function () {
-  //   if (document.readyState === "complete") {
-  //     console.log("complete");
-  //     getImg();
-  //   }
-  // };
-
-  // React.useEffect(function () {
-  // lifter(getImg);
-  // });
-
   useInterval(getImg, 1000);
 
   React.useLayoutEffect(() => {
@@ -142,7 +121,11 @@ function Slideshow({ slideArray, lifter }) {
         myTransition(index * size);
         setPosition(index + 1);
       };
-      setGoToSlide(() => toSpecificSlide);
+      setGoToSlide(() => {
+        if (imgArray.length > 1) {
+          return toSpecificSlide;
+        }
+      });
     }
   }, [execIter, setGoToSlide]);
 
