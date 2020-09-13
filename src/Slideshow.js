@@ -1,6 +1,47 @@
 import * as React from "react";
 import styles from "./slideshow.module.css";
 
+const myH1 = {
+  textAlign: "center",
+  lineHeight: "1rem",
+};
+const myH2 = {
+  textAlign: "center",
+  lineHeight: "1rem",
+};
+
+const myContainer = {
+  margin: "auto",
+  overflow: "hidden",
+  width: "800px",
+  height: "400px",
+  position: "relative",
+};
+
+const mySlides = {
+  display: "flex",
+  width: "100%",
+  height: "400px",
+};
+
+// inizio: forse inutilizzata??? XXXXXXXXXXXXXXXXXXXXX
+// const mySlide = {
+//   width: "100%",
+//   height: "400px",
+// };
+// fine: forse inutilizzata??? XXXXXXXXXXXXXXXXXXXXX
+
+// myIndicators = {
+//   margin: "auto",
+//   width: "800px",
+//   textAlign: "center",
+//   marginTop: "1rem"
+// }
+
+// mySelected = {
+//   backgroundColor: "aqua"
+// }
+
 function useInterval(callback, delay) {
   // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
   const savedCallback = React.useRef();
@@ -131,12 +172,12 @@ function Slideshow({ slideArray, lifter }) {
 
   return (
     <div>
-      <h1 className={styles.myH1}>React SlideshowX</h1>
-      <h2 className={styles.myH2}>
+      <h1 style={myH1}>React SlideshowX</h1>
+      <h2 style={myH2}>
         Super lightweight, optimized for speed and performance.
       </h2>
 
-      <div id='carouselContainer' className={styles.container}>
+      <div id='carouselContainer' style={myContainer}>
         <Slides imgArray={imgArray} />
       </div>
 
@@ -159,7 +200,7 @@ function Slides({ imgArray }) {
   //   getImg();
   // });
   return (
-    <div id='carouselSlides' className={styles.slides}>
+    <div id='carouselSlides' style={mySlides}>
       {imgArray ? imgArray : null}
       {/* imgArray */}
     </div>
