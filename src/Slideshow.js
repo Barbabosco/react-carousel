@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "./slideshow.module.css";
+// import styles from "./slideshow.module.css";
 
 const myH1 = {
   textAlign: "center",
@@ -31,16 +31,16 @@ const mySlides = {
 // };
 // fine: forse inutilizzata??? XXXXXXXXXXXXXXXXXXXXX
 
-// myIndicators = {
-//   margin: "auto",
-//   width: "800px",
-//   textAlign: "center",
-//   marginTop: "1rem"
-// }
+const myIndicators = {
+  margin: "auto",
+  width: "800px",
+  textAlign: "center",
+  marginTop: "1rem",
+};
 
-// mySelected = {
-//   backgroundColor: "aqua"
-// }
+const mySelected = {
+  backgroundColor: "aqua",
+};
 
 function useInterval(callback, delay) {
   // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
@@ -132,7 +132,7 @@ function Slideshow({ slideArray, lifter }) {
           key={`deskslide${execIter + 2}`}
           onLoad={() => {
             // questa è la chiamata ricorsiva
-            getImg();
+            // getImg();
           }}
         />
       </picture>,
@@ -143,6 +143,7 @@ function Slideshow({ slideArray, lifter }) {
   };
 
   useInterval(getImg, 1000);
+  // setTimeout(getImg, 1000);
 
   React.useLayoutEffect(() => {
     if (execIter) {
@@ -199,7 +200,7 @@ function Slides({ imgArray }) {
   );
 }
 
-function Indicators({ imgArray, goToSlide, position }) {
+function Indicators({ slideArray, imgArray, goToSlide, position }) {
   const prevSlide = () => {
     if (position > 1) {
       goToSlide(position - 2);
@@ -212,14 +213,14 @@ function Indicators({ imgArray, goToSlide, position }) {
   };
 
   return (
-    <div className={styles.indicators}>
+    <div style={myIndicators}>
       <button onClick={() => prevSlide()}>back</button>
       {imgArray.map((img, index) => {
         return (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={position === index + 1 ? styles.selected : undefined}
+            style={position === index + 1 ? mySelected : undefined}
           >
             {index + 1}
           </button>
