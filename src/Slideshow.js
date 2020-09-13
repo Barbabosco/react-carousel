@@ -150,7 +150,7 @@ function Slideshow({ slideArray, lifter }) {
     },
     imgArray.length < slideArray.length
       ? imgArray.length < 2
-        ? 500
+        ? 1000
         : 100
       : null
   );
