@@ -132,9 +132,6 @@ function Slideshow({ slideArray, lifter }) {
           key={`deskslide${execIter + 2}`}
           onLoad={() => {
             // questa è la chiamata ricorsiva
-
-            console.log("onLoad");
-
             getImg();
           }}
         />
@@ -149,7 +146,7 @@ function Slideshow({ slideArray, lifter }) {
 
   React.useLayoutEffect(() => {
     if (execIter) {
-      // se getImg() è già stato eseguito una volta, c'è la prima img nell'array
+      // se c'è già la prima img nell'array
 
       let size = document.getElementById(`slide1`).clientWidth;
       const carouselSlides = document.getElementById("carouselSlides");
@@ -168,11 +165,11 @@ function Slideshow({ slideArray, lifter }) {
         }
       });
     }
-  }, [execIter, setGoToSlide]);
+  }, [execIter, setGoToSlide, imgArray.length]);
 
   return (
     <div>
-      <h1 style={myH1}>React SlideshowX</h1>
+      <h1 style={myH1}>React Slideshow</h1>
       <h2 style={myH2}>
         Super lightweight, optimized for speed and performance.
       </h2>
@@ -195,14 +192,9 @@ export default Slideshow;
 
 function Slides({ imgArray }) {
   console.log(`imgArray.length: ${imgArray.length}`);
-  // React.useEffect(function () {
-  //   console.log("Slides: getImg run");
-  //   getImg();
-  // });
   return (
     <div id='carouselSlides' style={mySlides}>
       {imgArray ? imgArray : null}
-      {/* imgArray */}
     </div>
   );
 }
@@ -216,7 +208,6 @@ function Indicators({ imgArray, goToSlide, position }) {
   const nextSlide = () => {
     if (position < imgArray.length) {
       goToSlide(position);
-      // console.log("nextSlide fired");
     }
   };
 
