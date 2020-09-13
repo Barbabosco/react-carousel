@@ -143,14 +143,16 @@ function Slideshow({ slideArray, lifter }) {
   //   getImg();
   // }, 1000);
 
-  let [delay, setDelay] = React.useState(1000);
-
   useInterval(
     function () {
       console.log("useInterval run");
       getImg();
     },
-    count < 7 ? (count < 1 ? 1000 : 100) : null
+    imgArray.length < slideArray.length
+      ? imgArray.length < 2
+        ? 500
+        : 100
+      : null
   );
 
   React.useLayoutEffect(() => {
