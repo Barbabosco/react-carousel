@@ -1,40 +1,6 @@
 import * as React from "react";
 // import styles from "./slideshow.module.css";
 
-const myH1 = {
-  textAlign: "center",
-  lineHeight: "1rem",
-};
-const myH2 = {
-  textAlign: "center",
-  lineHeight: "1rem",
-};
-
-const myContainer = {
-  margin: "auto",
-  overflow: "hidden",
-  width: "800px",
-  height: "400px",
-  position: "relative",
-};
-
-const mySlides = {
-  display: "flex",
-  width: "100%",
-  height: "400px",
-};
-
-const myIndicators = {
-  margin: "auto",
-  width: "800px",
-  textAlign: "center",
-  marginTop: "1rem",
-};
-
-const mySelected = {
-  backgroundColor: "aqua", // da verificare se serve XXXXXXXXXXXXXXXXXXXXXXXXXX
-};
-
 function useInterval(callback, delay) {
   // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
   const savedCallback = React.useRef();
@@ -93,18 +59,12 @@ function Slideshow({ slideArray, lifter }) {
   const getImg = () => {
     // questa funzione serve a caricare le immagini dello slideshow
     // dopo il suo iniziale caricamento.
-    // Utilizzo questa funzione in modo 🚀 ricorsivo 🚀
-    // (attraverso onLoad: ogni nuova immagine chiama nuovamente
-    // questa funzione per aggiungere un'altra immagine all'array).
-    // La nuova chiamata avviene onLoad, in modo da essere sicuri
-    //  di mostrare un'immagine alla volta nella giusta sequenza.
-    // La condizione di uscita si raggiunge al termine dell'array
 
     console.log(`getImg run`);
 
     if (execIter === slideArray.length - 1) {
-      // condizione di uscita dalla ricorsione
-      console.log("exit recursion");
+      // condizione di uscita
+      console.log("exit");
       return;
     }
 
@@ -123,10 +83,6 @@ function Slideshow({ slideArray, lifter }) {
           srcSet={`${process.env.PUBLIC_URL}${slideArray[execIter + 1][0]}.jpg`}
           alt={`${slideArray[execIter + 1][1]}`}
           key={`deskslide${execIter + 2}`}
-          onLoad={() => {
-            // questa è la chiamata ricorsiva
-            // getImg();
-          }}
         />
       </picture>,
     ]);
@@ -136,13 +92,6 @@ function Slideshow({ slideArray, lifter }) {
     setExecIter(execIter + 1);
   };
 
-  // getImg();
-  // useInterval(getImg, 1000);
-  // setTimeout(getImg, 1000);
-  // setTimeout(function () {
-  //   getImg();
-  // }, 1000);
-
   useInterval(
     function () {
       console.log("useInterval run");
@@ -150,7 +99,7 @@ function Slideshow({ slideArray, lifter }) {
     },
     imgArray.length < slideArray.length
       ? imgArray.length < 2
-        ? 1000
+        ? 2000
         : 100
       : null
   );
@@ -191,6 +140,7 @@ function Slideshow({ slideArray, lifter }) {
 
       <Indicators
         imgArray={imgArray}
+        slideArray={slideArray}
         goToSlide={goToSlide}
         position={position}
       />
@@ -221,21 +171,82 @@ function Indicators({ slideArray, imgArray, goToSlide, position }) {
     }
   };
 
-  return (
-    <div style={myIndicators}>
-      <button onClick={() => prevSlide()}>back</button>
-      {imgArray.map((img, index) => {
-        return (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            style={position === index + 1 ? mySelected : undefined}
-          >
-            {index + 1}
-          </button>
-        );
-      })}
-      <button onClick={() => nextSlide()}>next</button>
-    </div>
-  );
+  if (imgArray.length === 5) {
+    return (
+      <div style={myIndicators}>
+        <button onClick={() => prevSlide()}>back</button>
+        {slideArray.map((img, index) => {
+          return (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              style={position === index + 1 ? mySelected : undefined}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+        <button onClick={() => nextSlide()}>next</button>
+      </div>
+    );
+  } else {
+    return (
+      <div style={myIndicatorsNotActive}>
+        <button>back</button>
+        {slideArray.map((img, index) => {
+          return (
+            <button
+              key={index}
+              style={position === index + 1 ? mySelected : undefined}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+        <button>next</button>
+      </div>
+    );
+  }
 }
+
+const myH1 = {
+  textAlign: "center",
+  lineHeight: "1rem",
+};
+const myH2 = {
+  textAlign: "center",
+  lineHeight: "1rem",
+};
+
+const myContainer = {
+  margin: "auto",
+  overflow: "hidden",
+  width: "800px",
+  height: "400px",
+  position: "relative",
+};
+
+const mySlides = {
+  display: "flex",
+  width: "100%",
+  height: "400px",
+};
+
+const myIndicators = {
+  margin: "auto",
+  width: "800px",
+  textAlign: "center",
+  marginTop: "1rem",
+};
+
+const myIndicatorsNotActive = {
+  margin: "auto",
+  width: "800px",
+  textAlign: "center",
+  marginTop: "1rem",
+  opacity: "0.3",
+};
+
+const mySelected = {
+  backgroundColor: "aqua", // da verificare se serve XXXXXXXXXXXXXXXXXXXXXXXXXX
+};
