@@ -1,5 +1,5 @@
 import * as React from "react";
-// import styles from "./slideshow.module.css";
+import { useDrag } from "react-use-gesture";
 
 function useInterval(callback, delay) {
   // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
@@ -42,6 +42,10 @@ function Slideshow({ slideArray, lifter }) {
     </picture>,
   ]);
   let [goToSlide, setGoToSlide] = React.useState(null);
+
+  const bind = useDrag(() => {
+    console.log("DRAGGGGGG");
+  });
 
   useInterval(() => {
     // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
@@ -144,6 +148,7 @@ function Slideshow({ slideArray, lifter }) {
         goToSlide={goToSlide}
         position={position}
         setCount={setCount}
+        {...bind()}
       />
       <p>{count}</p>
     </div>
