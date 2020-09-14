@@ -143,6 +143,7 @@ function Slideshow({ slideArray, lifter }) {
         slideArray={slideArray}
         goToSlide={goToSlide}
         position={position}
+        setCount={setCount}
       />
       <p>{count}</p>
     </div>
@@ -159,7 +160,7 @@ function Slides({ imgArray }) {
   );
 }
 
-function Indicators({ slideArray, imgArray, goToSlide, position }) {
+function Indicators({ slideArray, imgArray, goToSlide, position, setCount }) {
   const prevSlide = () => {
     if (position > 1) {
       goToSlide(position - 2);
@@ -174,19 +175,36 @@ function Indicators({ slideArray, imgArray, goToSlide, position }) {
   if (imgArray.length === 5) {
     return (
       <div style={myIndicators}>
-        <button onClick={() => prevSlide()}>back</button>
+        <button
+          onClick={() => {
+            prevSlide();
+            setCount(0);
+          }}
+        >
+          back
+        </button>
         {slideArray.map((img, index) => {
           return (
             <button
               key={index}
-              onClick={() => goToSlide(index)}
+              onClick={() => {
+                goToSlide(index);
+                setCount(0);
+              }}
               style={position === index + 1 ? mySelected : undefined}
             >
               {index + 1}
             </button>
           );
         })}
-        <button onClick={() => nextSlide()}>next</button>
+        <button
+          onClick={() => {
+            nextSlide();
+            setCount(0);
+          }}
+        >
+          next
+        </button>
       </div>
     );
   } else {
