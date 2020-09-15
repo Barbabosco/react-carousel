@@ -47,13 +47,13 @@ function Slideshow({ slideArray, lifter }) {
   const bind = useDrag(
     ({
       swipe: [swipeX],
-      down,
-      movement: [mx],
-      direction: [xDir],
-      distance,
-      event,
+      // down,
+      // movement: [mx],
+      // direction: [xDir],
+      // distance,
+      // event,
     }) => {
-      console.log(`swipeX: ${swipeX}`);
+      // console.log(`swipeX: ${swipeX}`);
       setMyText(myText + swipeX);
       // console.log(`down: ${down}`);
       // console.log(`mx: ${mx}`);
@@ -63,15 +63,15 @@ function Slideshow({ slideArray, lifter }) {
       // event.preventDefault();
       // cancel();
       // goToSlide(3);
-      if (swipeX > 0) {
+      if (swipeX < 0) {
         nextSlide();
       }
-      if (swipeX < 0) {
+      if (swipeX > 0) {
         prevSlide();
       }
       return;
-    },
-    { axis: "x" }
+    }
+    // { axis: "x" }
   );
 
   useInterval(() => {
