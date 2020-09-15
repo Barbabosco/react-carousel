@@ -24,6 +24,7 @@ function useInterval(callback, delay) {
 
 function Slideshow({ slideArray, lifter }) {
   const [count, setCount] = React.useState(0);
+  let [myText, setMyText] = React.useState("");
   let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
   let [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
   let [imgArray, setImgArray] = React.useState([
@@ -43,32 +44,54 @@ function Slideshow({ slideArray, lifter }) {
   ]);
   let [goToSlide, setGoToSlide] = React.useState(null);
 
-  const bind = useDrag(() => {
-    console.log("DRAGGGGGG");
-  });
+  const bind = useDrag(
+    ({
+      swipe: [swipeX],
+      down,
+      movement: [mx],
+      direction: [xDir],
+      distance,
+      event,
+    }) => {
+      console.log(`swipeX: ${swipeX}`);
+      setMyText(myText + swipeX);
+      // console.log(`down: ${down}`);
+      // console.log(`mx: ${mx}`);
+      // console.log(`xDir: ${xDir}`);
+      // console.log(`distance: ${distance}`);
+      // console.log(`event: ${event}`);
+      // event.preventDefault();
+      // cancel();
+      // goToSlide(3);
+      if (mx > 0 && distance > 50) {
+        nextSlide();
+      }
+      if (mx < 0 && distance > 50) {
+        prevSlide();
+      }
+      return;
+    },
+    { axis: "x" }
+  );
 
   useInterval(() => {
     // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
     setCount(count + 1);
 
-    if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
-      if (position < imgArray.length) {
-        goToSlide(position);
-      } else {
-        goToSlide(0);
-      }
-    }
+    // if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
+    //   if (position < imgArray.length) {
+    //     goToSlide(position);
+    //   } else {
+    //     goToSlide(0);
+    //   }
+    // }
   }, 1000);
 
   const getImg = () => {
     // questa funzione serve a caricare le immagini dello slideshow
     // dopo il suo iniziale caricamento.
-
-    console.log(`getImg run`);
-
     if (execIter === slideArray.length - 1) {
       // condizione di uscita
-      console.log("exit");
       return;
     }
 
@@ -91,14 +114,11 @@ function Slideshow({ slideArray, lifter }) {
       </picture>,
     ]);
 
-    console.log(`execIter: ${execIter}`);
-    console.log();
     setExecIter(execIter + 1);
   };
 
   useInterval(
     function () {
-      console.log("useInterval run");
       getImg();
     },
     imgArray.length < slideArray.length
@@ -131,14 +151,27 @@ function Slideshow({ slideArray, lifter }) {
     }
   }, [execIter, setGoToSlide, imgArray.length]);
 
+  const prevSlide = () => {
+    if (position > 1) {
+      goToSlide(position - 2);
+    }
+  };
+  const nextSlide = () => {
+    if (position < imgArray.length) {
+      goToSlide(position);
+    }
+  };
+
   return (
     <div>
-      <h1 style={myH1}>React Slideshow</h1>
-      <h2 style={myH2}>
+      <h1 style={myH1} {...bind()}>
+        React Slideshow
+      </h1>
+      <h2 style={myH2} {...bind()}>
         Super lightweight, optimized for speed and performance.
       </h2>
 
-      <div id='carouselContainer' style={myContainer}>
+      <div id='carouselContainer' style={myContainer} {...bind()}>
         <Slides imgArray={imgArray} />
       </div>
 
@@ -148,9 +181,11 @@ function Slideshow({ slideArray, lifter }) {
         goToSlide={goToSlide}
         position={position}
         setCount={setCount}
-        {...bind()}
+        prevSlide={prevSlide}
+        nextSlide={nextSlide}
       />
       <p>{count}</p>
+      <p>{myText}</p>
     </div>
   );
 }
@@ -165,17 +200,25 @@ function Slides({ imgArray }) {
   );
 }
 
-function Indicators({ slideArray, imgArray, goToSlide, position, setCount }) {
-  const prevSlide = () => {
-    if (position > 1) {
-      goToSlide(position - 2);
-    }
-  };
-  const nextSlide = () => {
-    if (position < imgArray.length) {
-      goToSlide(position);
-    }
-  };
+function Indicators({
+  slideArray,
+  imgArray,
+  goToSlide,
+  position,
+  setCount,
+  prevSlide,
+  nextSlide,
+}) {
+  // const prevSlide = () => {
+  //   if (position > 1) {
+  //     goToSlide(position - 2);
+  //   }
+  // };
+  // const nextSlide = () => {
+  //   if (position < imgArray.length) {
+  //     goToSlide(position);
+  //   }
+  // };
 
   if (imgArray.length === 5) {
     return (
