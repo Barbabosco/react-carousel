@@ -63,10 +63,10 @@ function Slideshow({ slideArray, lifter }) {
       // event.preventDefault();
       // cancel();
       // goToSlide(3);
-      if (mx > 0 && distance > 50) {
+      if (swipeX > 0) {
         nextSlide();
       }
-      if (mx < 0 && distance > 50) {
+      if (swipeX < 0) {
         prevSlide();
       }
       return;
