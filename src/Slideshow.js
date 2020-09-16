@@ -1,7 +1,9 @@
 import * as React from "react";
-import { useDrag } from "react-use-gesture";
+import { useDrag } from "react-use-gesture"; // libreria per gestire touch events
 
 function useInterval(callback, delay) {
+  // setInterval con gli hooks funziona in maniera imprevedibile
+  // quindi serviva una soluzione diversa, e qui sotto quella di Dan Abramov
   // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
   const savedCallback = React.useRef();
 
@@ -24,9 +26,9 @@ function useInterval(callback, delay) {
 
 function Slideshow({ slideArray, lifter }) {
   const [count, setCount] = React.useState(0);
-  let [myText, setMyText] = React.useState("");
   let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
   let [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
+  // Qui sotto si vede che, on mounting, viene caricata solo la prima slide
   let [imgArray, setImgArray] = React.useState([
     <picture key={`deskslidePicture${execIter + 1}`}>
       <source
@@ -44,52 +46,35 @@ function Slideshow({ slideArray, lifter }) {
   ]);
   let [goToSlide, setGoToSlide] = React.useState(null);
 
-  const bind = useDrag(
-    ({
-      swipe: [swipeX],
-      // down,
-      // movement: [mx],
-      // direction: [xDir],
-      // distance,
-      // event,
-    }) => {
-      // console.log(`swipeX: ${swipeX}`);
-      setMyText(myText + swipeX);
-      // console.log(`down: ${down}`);
-      // console.log(`mx: ${mx}`);
-      // console.log(`xDir: ${xDir}`);
-      // console.log(`distance: ${distance}`);
-      // console.log(`event: ${event}`);
-      // event.preventDefault();
-      // cancel();
-      // goToSlide(3);
-      if (swipeX < 0) {
-        nextSlide();
-      }
-      if (swipeX > 0) {
-        prevSlide();
-      }
+  // Qui sotto, uso la libreria React Use Gesture per gestire lo swipe sulle immagini del carousel
+  const bind = useDrag(({ swipe: [swipeX] }) => {
+    if (swipeX < 0) {
+      nextSlide();
+    }
+    if (swipeX > 0) {
+      prevSlide();
       return;
     }
-    // { axis: "x" }
-  );
+  });
 
+  // Questo che segue è l'avanzamento automatico delle slide
   useInterval(() => {
-    // v. https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+    // v. nota sopra su useInterval()
     setCount(count + 1);
 
-    // if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
-    //   if (position < imgArray.length) {
-    //     goToSlide(position);
-    //   } else {
-    //     goToSlide(0);
-    //   }
-    // }
+    if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
+      if (position < imgArray.length) {
+        goToSlide(position);
+      } else {
+        goToSlide(0);
+      }
+    }
   }, 1000);
 
   const getImg = () => {
     // questa funzione serve a caricare le immagini dello slideshow
-    // dopo il suo iniziale caricamento.
+    // dopo il suo mounting.
+    // Ogni chiamata di getImg() viene caricata un'immagine
     if (execIter === slideArray.length - 1) {
       // condizione di uscita
       return;
@@ -121,10 +106,13 @@ function Slideshow({ slideArray, lifter }) {
     function () {
       getImg();
     },
+    // qui sotto l'impostazione del delay di useInterval:
+    // la prima chiamata è differita (2000ms) per lasciare tempo al caricamento di tutta l'applicazione
+    // dopo la prima, le altre possono essere immediatamente successive
     imgArray.length < slideArray.length
       ? imgArray.length < 2
         ? 2000
-        : 100
+        : 10
       : null
   );
 
@@ -140,6 +128,7 @@ function Slideshow({ slideArray, lifter }) {
         carouselSlides.style.transform = `translateX(-${xPosition}px)`;
       };
       const toSpecificSlide = (index) => {
+        setCount(0);
         myTransition(index * size);
         setPosition(index + 1);
       };
@@ -164,10 +153,8 @@ function Slideshow({ slideArray, lifter }) {
 
   return (
     <div>
-      <h1 style={myH1} {...bind()}>
-        React Slideshow
-      </h1>
-      <h2 style={myH2} {...bind()}>
+      <h1 style={myH1}>React Slideshow</h1>
+      <h2 style={myH2}>
         Super lightweight, optimized for speed and performance.
       </h2>
 
@@ -180,12 +167,10 @@ function Slideshow({ slideArray, lifter }) {
         slideArray={slideArray}
         goToSlide={goToSlide}
         position={position}
-        setCount={setCount}
         prevSlide={prevSlide}
         nextSlide={nextSlide}
       />
       <p>{count}</p>
-      <p>{myText}</p>
     </div>
   );
 }
@@ -209,24 +194,12 @@ function Indicators({
   prevSlide,
   nextSlide,
 }) {
-  // const prevSlide = () => {
-  //   if (position > 1) {
-  //     goToSlide(position - 2);
-  //   }
-  // };
-  // const nextSlide = () => {
-  //   if (position < imgArray.length) {
-  //     goToSlide(position);
-  //   }
-  // };
-
   if (imgArray.length === 5) {
     return (
       <div style={myIndicators}>
         <button
           onClick={() => {
             prevSlide();
-            setCount(0);
           }}
         >
           back
@@ -237,7 +210,6 @@ function Indicators({
               key={index}
               onClick={() => {
                 goToSlide(index);
-                setCount(0);
               }}
               style={position === index + 1 ? mySelected : undefined}
             >
@@ -248,7 +220,6 @@ function Indicators({
         <button
           onClick={() => {
             nextSlide();
-            setCount(0);
           }}
         >
           next
@@ -314,5 +285,5 @@ const myIndicatorsNotActive = {
 };
 
 const mySelected = {
-  backgroundColor: "aqua", // da verificare se serve XXXXXXXXXXXXXXXXXXXXXXXXXX
+  backgroundColor: "aqua",
 };
