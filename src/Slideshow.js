@@ -26,8 +26,10 @@ function useInterval(callback, delay) {
 
 function Slideshow({ slideArray, lifter }) {
   const [count, setCount] = React.useState(0);
-  let [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
-  let [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
+  const [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
+  const [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
+  const [size, setSize] = React.useState(null);
+
   // Qui sotto si vede che, on mounting, viene caricata solo la prima slide
   let [imgArray, setImgArray] = React.useState([
     <picture key={`deskslidePicture${execIter + 1}`}>
@@ -120,7 +122,8 @@ function Slideshow({ slideArray, lifter }) {
     if (execIter) {
       // se c'è già la prima img nell'array
 
-      let size = document.getElementById(`slide1`).clientWidth;
+      // let size = document.getElementById(`slide1`).clientWidth;
+      setSize(document.getElementById(`slide1`).clientWidth);
       const carouselSlides = document.getElementById("carouselSlides");
 
       const myTransition = (xPosition) => {
@@ -138,7 +141,7 @@ function Slideshow({ slideArray, lifter }) {
         }
       });
     }
-  }, [execIter, setGoToSlide, imgArray.length]);
+  }, [execIter, setGoToSlide, imgArray.length, size]);
 
   const prevSlide = () => {
     if (position > 1) {
@@ -150,6 +153,18 @@ function Slideshow({ slideArray, lifter }) {
       goToSlide(position);
     }
   };
+
+  // Per la seguente funzionalità, ho seguito questo tutorial: https://www.pluralsight.com/guides/re-render-react-component-on-window-resize
+  React.useEffect(() => {
+    function handleResize() {
+      setSize(document.getElementById(`slide1`).clientWidth);
+      console.log(`size: ${size}`);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 
   return (
     <div>
