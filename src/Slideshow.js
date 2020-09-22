@@ -43,6 +43,7 @@ function Slideshow({ slideArray, lifter }) {
         srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.jpg`}
         alt={`${slideArray[0][1]}`}
         key={`deskslide${execIter + 1}`}
+        style={{ width: "600px" }}
       />
     </picture>,
   ]);
@@ -97,6 +98,7 @@ function Slideshow({ slideArray, lifter }) {
           srcSet={`${process.env.PUBLIC_URL}${slideArray[execIter + 1][0]}.jpg`}
           alt={`${slideArray[execIter + 1][1]}`}
           key={`deskslide${execIter + 2}`}
+          style={{ width: "600px" }}
         />
       </picture>,
     ]);
@@ -271,10 +273,11 @@ const myH2 = {
 };
 
 const myContainer = {
+  backgroundColor: "red",
   margin: "auto",
   overflow: "hidden",
-  width: "800px",
-  height: "400px",
+  width: "600px",
+  height: "300px",
   position: "relative",
 };
 
