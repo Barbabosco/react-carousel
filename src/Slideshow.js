@@ -47,9 +47,9 @@ function Slideshow({ slideArray, lifter }) {
         alt={`${slideArray[0][1]}`}
         key='deskSlideJpg0'
         style={{ width: "100%" }}
-        onLoad={() => {
-          setSize(document.getElementById("deskSlide0").width);
-        }}
+        /* onLoad={() => {
+          setSize(document.getElementById("carouselSlides").width);
+        }} */
       />
     </picture>
   );
@@ -118,6 +118,13 @@ function Slideshow({ slideArray, lifter }) {
     }
 
     if (execIter === 0) {
+      setPosition(1);
+      setSize(document.getElementById("carouselSlides").clientWidth);
+      console.log(
+        `document.getElementById("carouselSlides").clientWidth: ${
+          document.getElementById("carouselSlides").clientWidth
+        }`
+      );
       console.log("INIZIO sostituzione con myPictureZeroModified");
       // setImgArray([]);
       setImgArray([myPictureZeroModified]);
@@ -128,7 +135,7 @@ function Slideshow({ slideArray, lifter }) {
       );
       console.log("FINE sostituzione con myPictureZeroModified");
       setExecIter(execIter + 1);
-      return;
+      // return;
     }
 
     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -212,8 +219,8 @@ function Slideshow({ slideArray, lifter }) {
   React.useEffect(() => {
     function handleResize() {
       console.log("Qui sotto");
-      // setSize(document.getElementById(`carouselSlides`).clientWidth); // ok!!!!
-      setSize(document.getElementById(`carouselContainer`).clientWidth);
+      // setSize(document.getElementById("carouselSlides").clientWidth); // ok!!!!
+      setSize(document.getElementById(`carouselContainer`).clientWidth); // ok!!!!
 
       console.log(`size: ${size}`);
     }
