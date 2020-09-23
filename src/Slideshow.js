@@ -28,27 +28,47 @@ function useInterval(callback, delay) {
 function Slideshow({ slideArray, lifter }) {
   const [count, setCount] = React.useState(0);
   const [execIter, setExecIter] = React.useState(0); // This is the number of times that getImg() has run
-  const [position, setPosition] = React.useState(1); // This is the number of the slide that is showed in the carousel
+  const [position, setPosition] = React.useState(0); // This is the number of the slide that is showed in the carousel
   const [size, setSize] = React.useState(null);
 
   // Qui sotto si vede che, on mounting, viene caricata solo la prima slide
-  let [imgArray, setImgArray] = React.useState([
-    <picture key={`deskslidePicture${execIter + 1}`}>
-      <source
+
+  const myPictureZero = (
+    <picture key={`deskslidePicture0`}>
+      {/* <source
         srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.webp`}
-        key={`deskslideWebP${execIter + 1}`}
-        type='image/webp'
-      />
+        key="deskslideWeb0""
+        type="image/webp"
+      /> */}
       <img
-        id={`slide${execIter + 1}`}
+        id='deskSlide0'
         srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.jpg`}
+        type='image/jpg'
         alt={`${slideArray[0][1]}`}
-        key={`deskslide${execIter + 1}`}
-        style={{ width: "auto" }}
+        key='deskSlideJpg0'
+        style={{ width: "100%" }}
+        onLoad={() => {
+          setSize(document.getElementById("deskSlide0").width);
+        }}
       />
-    </picture>,
-  ]);
+    </picture>
+  );
+
+  let [imgArray, setImgArray] = React.useState([myPictureZero]);
   let [goToSlide, setGoToSlide] = React.useState(null);
+
+  const myPictureZeroModified = (
+    <picture key='deskslidePicture0'>
+      <img
+        id='deskSlide0Modified'
+        srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.jpg`}
+        type='image/jpg'
+        alt={`${slideArray[0][1]}`}
+        key='deskSlide0'
+        style={{ width: size }}
+      />
+    </picture>
+  );
 
   // Qui sotto, uso la libreria React Use Gesture per gestire lo swipe sulle immagini del carousel
   const bind = useDrag(({ swipe: [swipeX] }) => {
@@ -62,44 +82,75 @@ function Slideshow({ slideArray, lifter }) {
   });
 
   // Questo che segue è l'avanzamento automatico delle slide
-  useInterval(() => {
-    // v. nota sopra su useInterval()
-    setCount(count + 1);
+  // useInterval(() => {
+  //   // v. nota sopra su useInterval()
+  //   setCount(count + 1);
 
-    if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
-      if (position < imgArray.length) {
-        goToSlide(position);
-      } else {
-        goToSlide(0);
-      }
-    }
-  }, 1000);
+  //   if (imgArray.length > 1 && count > 0 && count % 3 === 0) {
+  //     if (position < imgArray.length) {
+  //       goToSlide(position);
+  //     } else {
+  //       goToSlide(0);
+  //     }
+  //   }
+  // }, 1000);
 
-  const getImg = () => {
+  let getImg = () => {
     // questa funzione serve a caricare le immagini dello slideshow
     // dopo il suo mounting.
     // Ogni chiamata di getImg() viene caricata un'immagine
-    if (execIter === slideArray.length - 1) {
+
+    // INIZIO provvisorio, da migliorare con la condizione di uscita del timer e accorpare con condizione successiva
+    if (execIter >= 7) {
+      console.log("uscita definitiva");
+      getImg = null;
+      return;
+    }
+    // FINE provvisorio, da migliorare con la condizione di uscita del timer e accorpare con condizione successiva
+
+    // console.log("getImg is running");
+    // console.log(`execIter: ${execIter}`);
+    if (execIter === slideArray.length) {
       // condizione di uscita
+      console.log("uscita");
+      setExecIter(execIter + 1);
       return;
     }
 
+    if (execIter === 0) {
+      console.log("INIZIO sostituzione con myPictureZeroModified");
+      // setImgArray([]);
+      setImgArray([myPictureZeroModified]);
+      console.log(
+        `document.getElementById("deskSlide0Modified").width: ${
+          document.getElementById("deskSlide0Modified").width
+        }`
+      );
+      console.log("FINE sostituzione con myPictureZeroModified");
+      setExecIter(execIter + 1);
+      return;
+    }
+
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(slideArray[execIter][0]);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     setImgArray([
       ...imgArray,
-      <picture key={`deskslidePicture${execIter + 2}`}>
-        <source
+      <picture key={`deskslidePicture${execIter}`}>
+        {/* <source
           srcSet={`${process.env.PUBLIC_URL}${
             slideArray[execIter + 1][0]
           }.webp`}
           key={`deskslideWebP${execIter + 1}`}
           type='image/webp'
-        />
+        /> */}
         <img
-          id={`slide${execIter + 2}`}
-          srcSet={`${process.env.PUBLIC_URL}${slideArray[execIter + 1][0]}.jpg`}
-          alt={`${slideArray[execIter + 1][1]}`}
-          key={`deskslide${execIter + 2}`}
-          style={{ width: "auto" }}
+          id={`slide${execIter}`}
+          srcSet={`${process.env.PUBLIC_URL}${slideArray[execIter][0]}.jpg`}
+          /* alt={`${slideArray[execIter][1]}`} */
+          alt='provvisorio'
+          key={`deskslide${execIter}`}
+          style={{ width: size }}
         />
       </picture>,
     ]);
@@ -109,14 +160,14 @@ function Slideshow({ slideArray, lifter }) {
 
   useInterval(
     function () {
-      getImg();
+      getImg && getImg();
     },
     // qui sotto l'impostazione del delay di useInterval:
     // la prima chiamata è differita (2000ms) per lasciare tempo al caricamento di tutta l'applicazione
     // dopo la prima, le altre possono essere immediatamente successive
     imgArray.length < slideArray.length
       ? imgArray.length < 2
-        ? 2000
+        ? 1000
         : 10
       : null
   );
@@ -125,8 +176,8 @@ function Slideshow({ slideArray, lifter }) {
     if (execIter) {
       // se c'è già la prima img nell'array
 
-      // let size = document.getElementById(`slide1`).clientWidth;
-      setSize(document.getElementById(`slide1`).clientWidth);
+      // let size = document.getElementById(`deskSlide0`).clientWidth;
+      // setSize(document.getElementById(`deskSlide0`).clientWidth);
       const carouselSlides = document.getElementById("carouselSlides");
 
       const myTransition = (xPosition) => {
@@ -160,7 +211,10 @@ function Slideshow({ slideArray, lifter }) {
   // Per la seguente funzionalità, ho seguito questo tutorial: https://www.pluralsight.com/guides/re-render-react-component-on-window-resize
   React.useEffect(() => {
     function handleResize() {
-      setSize(document.getElementById(`slide1`).clientWidth);
+      console.log("Qui sotto");
+      // setSize(document.getElementById(`carouselSlides`).clientWidth); // ok!!!!
+      setSize(document.getElementById(`carouselContainer`).clientWidth);
+
       console.log(`size: ${size}`);
     }
     window.addEventListener("resize", handleResize);
@@ -188,7 +242,11 @@ function Slideshow({ slideArray, lifter }) {
         prevSlide={prevSlide}
         nextSlide={nextSlide}
       />
-      <p>{count}</p>
+      <p>
+        count: {count} | size: {size} | imgArray.length: {imgArray.length} |
+        position: {position} | execIter: {execIter} |
+        {imgArray[imgArray.length - 1][0]}
+      </p>
     </div>
   );
 }
