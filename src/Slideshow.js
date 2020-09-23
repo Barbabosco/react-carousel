@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useDrag } from "react-use-gesture"; // libreria per gestire touch events
+import "./slideshow.css";
 
 function useInterval(callback, delay) {
   // setInterval con gli hooks funziona in maniera imprevedibile
@@ -43,7 +44,7 @@ function Slideshow({ slideArray, lifter }) {
         srcSet={`${process.env.PUBLIC_URL}${slideArray[0][0]}.jpg`}
         alt={`${slideArray[0][1]}`}
         key={`deskslide${execIter + 1}`}
-        style={{ width: "600px" }}
+        style={{ width: "auto" }}
       />
     </picture>,
   ]);
@@ -98,7 +99,7 @@ function Slideshow({ slideArray, lifter }) {
           srcSet={`${process.env.PUBLIC_URL}${slideArray[execIter + 1][0]}.jpg`}
           alt={`${slideArray[execIter + 1][1]}`}
           key={`deskslide${execIter + 2}`}
-          style={{ width: "600px" }}
+          style={{ width: "auto" }}
         />
       </picture>,
     ]);
@@ -170,12 +171,12 @@ function Slideshow({ slideArray, lifter }) {
 
   return (
     <div>
-      <h1 style={myH1}>React Slideshow</h1>
-      <h2 style={myH2}>
+      <h1 className='myH1'>React Slideshow</h1>
+      <h2 className='myH2'>
         Super lightweight, optimized for speed and performance.
       </h2>
 
-      <div id='carouselContainer' style={myContainer} {...bind()}>
+      <div id='carouselContainer' className='myContainer' {...bind()}>
         <Slides imgArray={imgArray} />
       </div>
 
@@ -196,7 +197,7 @@ export default Slideshow;
 
 function Slides({ imgArray }) {
   return (
-    <div id='carouselSlides' style={mySlides}>
+    <div id='carouselSlides' className='mySlides'>
       {imgArray ? imgArray : null}
     </div>
   );
@@ -213,7 +214,7 @@ function Indicators({
 }) {
   if (imgArray.length === 5) {
     return (
-      <div style={myIndicators}>
+      <div className='myIndicators'>
         <button
           onClick={() => {
             prevSlide();
@@ -228,7 +229,7 @@ function Indicators({
               onClick={() => {
                 goToSlide(index);
               }}
-              style={position === index + 1 ? mySelected : undefined}
+              className={position === index + 1 ? "mySelected" : undefined}
             >
               {index + 1}
             </button>
@@ -245,13 +246,13 @@ function Indicators({
     );
   } else {
     return (
-      <div style={myIndicatorsNotActive}>
+      <div className='myIndicatorsNotActive'>
         <button>back</button>
         {slideArray.map((img, index) => {
           return (
             <button
               key={index}
-              style={position === index + 1 ? mySelected : undefined}
+              className={position === index + 1 ? "mySelected" : undefined}
             >
               {index + 1}
             </button>
@@ -263,45 +264,45 @@ function Indicators({
   }
 }
 
-const myH1 = {
-  textAlign: "center",
-  lineHeight: "1rem",
-};
-const myH2 = {
-  textAlign: "center",
-  lineHeight: "1rem",
-};
+// const myH1 = {
+//   textAlign: "center",
+//   lineHeight: "1rem",
+// };
+// const myH2 = {
+//   textAlign: "center",
+//   lineHeight: "1rem",
+// };
 
-const myContainer = {
-  backgroundColor: "red",
-  margin: "auto",
-  overflow: "hidden",
-  width: "600px",
-  height: "300px",
-  position: "relative",
-};
+// const myContainer = {
+//   backgroundColor: "red",
+//   margin: "auto",
+//   overflow: "hidden",
+//   width: "600px",
+//   height: "300px",
+//   position: "relative",
+// };
 
-const mySlides = {
-  display: "flex",
-  width: "100%",
-  height: "400px",
-};
+// const mySlides = {
+//   display: "flex",
+//   width: "100%",
+//   height: "400px",
+// };
 
-const myIndicators = {
-  margin: "auto",
-  width: "800px",
-  textAlign: "center",
-  marginTop: "1rem",
-};
+// const myIndicators = {
+//   margin: "auto",
+//   width: "800px",
+//   textAlign: "center",
+//   marginTop: "1rem",
+// };
 
-const myIndicatorsNotActive = {
-  margin: "auto",
-  width: "800px",
-  textAlign: "center",
-  marginTop: "1rem",
-  opacity: "0.3",
-};
+// const myIndicatorsNotActive = {
+//   margin: "auto",
+//   width: "800px",
+//   textAlign: "center",
+//   marginTop: "1rem",
+//   opacity: "0.3",
+// };
 
-const mySelected = {
-  backgroundColor: "aqua",
-};
+// const "mySelected" = {
+//   backgroundColor: "aqua",
+// };
